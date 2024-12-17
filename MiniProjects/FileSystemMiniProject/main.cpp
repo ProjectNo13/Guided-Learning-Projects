@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+// Representing files and directories with the help of classes
 class File {
     public:
     std::string name, content;
@@ -15,6 +16,7 @@ class Directory {
     Directory* parent;
 };
 
+// Creating the base of the file system, the root
 Directory* createRootDirectory() {
     Directory* root = new Directory;
     root->name = "root";
@@ -22,6 +24,7 @@ Directory* createRootDirectory() {
     return root;
 }
 
+// Functionality 1: Creating a new file and saving it into the directory user is in
 void createNewFile(Directory* dir, const std::string& fileName, const std::string& fileContents)
 {
     File* newFile = new File{fileName, fileContents};
@@ -29,6 +32,7 @@ void createNewFile(Directory* dir, const std::string& fileName, const std::strin
     std::cout << "File, " << fileName << " has been created in directory, " << dir->name << ".\n";
 }
 
+// Functionality 2: Creating a new directory and saving it into the directory user is in
 void createNewDirectory(Directory* parentDir, const std::string& dirName)
 {
     Directory* newDirectory = new Directory;
@@ -38,6 +42,7 @@ void createNewDirectory(Directory* parentDir, const std::string& dirName)
     std::cout << "Directory, " << dirName << " has been created inside " << parentDir->name << ".\n";
 }
 
+// Functionality 3: Deleting a file by inputing its name
 void deleteFile(Directory* dir, const std::string& fileName)
 {
     for (auto targetedFile = dir->files.begin(); targetedFile != dir->files.end(); targetedFile++) {
@@ -51,10 +56,12 @@ void deleteFile(Directory* dir, const std::string& fileName)
     std::cout << "File, " << fileName << " not found. Returning...\n";
 }
 
+// Functionality 4: Deleting a directory by inputing its name
 void deleteDirectory(Directory* dir, const std::string& dirName)
 {
     for (auto targetedDir = dir->subDirs.begin(); targetedDir != dir->subDirs.end(); targetedDir++) {
         if ((*targetedDir)->name == dirName) {
+            clearDirectory(*targetedDir);
             delete *targetedDir;
             dir->subDirs.erase(targetedDir);
             std::cout << dirName << " has been successfuly deleted!\n";
@@ -64,6 +71,7 @@ void deleteDirectory(Directory* dir, const std::string& dirName)
     std::cout << "Directory, " << dirName << " not found. Returning...\n";
 }
 
+// Functionality 5: Lists all the contents in the directory user is in
 void listAllContents(Directory* dir) 
 {
     std::cout << "List of every content in directory, " << dir->name << ":\n";
@@ -75,6 +83,7 @@ void listAllContents(Directory* dir)
     }
 }
 
+// Functionality 6: Moves the user from one directory to the directory which name is inputed
 Directory* changeDirectory(Directory* currentDir, const std::string& dirName)
 {
     if (dirName == "..")
@@ -96,8 +105,25 @@ Directory* changeDirectory(Directory* currentDir, const std::string& dirName)
     return currentDir;
 }
 
+// Clears everything inside the directory inputed as the parameter
+void clearDirectory(Directory* dir) {
+    // Delete all files in the root
+    for (auto* file : dir->files) {
+        delete file;
+    }
+    dir->files.clear();
+
+    // Delete all subdirectories in the root
+    for (auto* subDir : dir->subDirs) {
+        clearDirectory(subDir);
+        delete subDir;
+    }
+    dir->subDirs.clear();
+}
+
 int main()
 {
+    // Creates the base and places user into it
     Directory* root = createRootDirectory();
     Directory* currentDir = root;
 
@@ -112,6 +138,7 @@ int main()
         std::cout << "Enter your choice ( 1, 2, 3, 4, 5, 6 or 7): "; std::cin >> option;
         std::cin.ignore();
 
+        // Utilizes switch to ensure correct code block is executed after user's input
         switch (option) {
             case 1:
             std::cout << "Enter new file name: ";
@@ -158,5 +185,9 @@ int main()
         }
     } while (option != 7);
 
+    // Clears everything inside the root, then deletes the root
+    clearDirectory(root);
+    delete root;
+    root = nullptr;
     return 0;
 }
