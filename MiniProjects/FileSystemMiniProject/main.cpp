@@ -24,6 +24,22 @@ Directory* createRootDirectory() {
     return root;
 }
 
+// Clears everything inside the directory inputed as the parameter
+void clearDirectory(Directory* dir) {
+    // Delete all files in the root
+    for (auto* file : dir->files) {
+        delete file;
+    }
+    dir->files.clear();
+
+    // Delete all subdirectories in the root
+    for (auto* subDir : dir->subDirs) {
+        clearDirectory(subDir);
+        delete subDir;
+    }
+    dir->subDirs.clear();
+}
+
 // Functionality 1: Creating a new file and saving it into the directory user is in
 void createNewFile(Directory* dir, const std::string& fileName, const std::string& fileContents)
 {
@@ -103,22 +119,6 @@ Directory* changeDirectory(Directory* currentDir, const std::string& dirName)
     }
     std::cout << "Directory not found.\n";
     return currentDir;
-}
-
-// Clears everything inside the directory inputed as the parameter
-void clearDirectory(Directory* dir) {
-    // Delete all files in the root
-    for (auto* file : dir->files) {
-        delete file;
-    }
-    dir->files.clear();
-
-    // Delete all subdirectories in the root
-    for (auto* subDir : dir->subDirs) {
-        clearDirectory(subDir);
-        delete subDir;
-    }
-    dir->subDirs.clear();
 }
 
 int main()
