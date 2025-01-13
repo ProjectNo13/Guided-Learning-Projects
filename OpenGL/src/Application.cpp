@@ -22,6 +22,7 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    // Initialize GLEW, which helps access and load OpenGL functions in the computer
     if (glewInit() != GLEW_OK) std::cout << "Error!" << std::endl;
 
     float positions[6] = {
@@ -30,11 +31,15 @@ int main(void)
         0.5f, -0.5f
     };
 
+    /* Utilizes buffers to store and upload the positions array, which contains 
+    the coordinates for 3 vertices. This would be used in the GPU for rendering */
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
 
+    /* Enables a vertex attribute array at index 0, which tells OpenGL the vertex data stored
+    at this index is for rendering. Also, tells OpenGL the layout of the vertex data */
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
@@ -46,6 +51,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Tells OpenGL to render triangles with the data it is provided
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         /* Swap front and back buffers */
