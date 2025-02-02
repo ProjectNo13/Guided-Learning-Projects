@@ -2,6 +2,7 @@
 
 const int size {3};
 
+// Function to display the present state of the board using nested for loops that handles both the printing of |, X/O placed and empty characters
 void displayBoard(char board[size][size])
 {
 	std::cout << "----------------------" << std::endl;
@@ -19,6 +20,7 @@ void displayBoard(char board[size][size])
 	}
 }
 
+// Function comparing each winning condition through for loops and if statements, returning a bool to indicate if a winning condition has been met
 bool checkIfWon(char board[size][size], char player)
 {
 	for (int i = 0; i < size; i++)
@@ -33,6 +35,7 @@ bool checkIfWon(char board[size][size], char player)
 	return false;
 }
 
+// Function uses nested for loops to iterate through to find if there are no more empty spaces, meaning no more possible moves 
 bool checkIfDraw(char board[size][size])
 {
 	for (int i = 0; i < size; i++)
@@ -64,6 +67,7 @@ int main()
 	{
 		displayBoard(board);
 
+		// Asks current player to input their row and column selection, saves it as int and checks if choice is invalid before placing the character
 		std::cout << "Player " << playerCharacter << ", which row would you like to select (1-" << size << "):  ";
 		std::cin >> row;
 		std::cout << "Player " << playerCharacter << ", which column would you like to select (1-" << size << "):  ";
@@ -77,6 +81,7 @@ int main()
 
 		board[row - 1][column - 1] = playerCharacter;
 
+		// if statements utilizing functions and their return types to check for wins or draws
 		if (checkIfWon(board, playerCharacter))
 		{
 			displayBoard(board);
